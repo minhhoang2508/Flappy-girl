@@ -1,8 +1,9 @@
 #include <SFML/Graphics.hpp>
-#include<iostream>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+
 using namespace std;
 
 const int WINDOW_WIDTH = 552;
@@ -18,6 +19,7 @@ class Pipe {
 public:
     sf::Sprite topPipe;
     sf::Sprite bottomPipe;
+    bool scored = false;
 
     Pipe(float x, float gapY, sf::Texture& pipeTexture) {
         topPipe.setTexture(pipeTexture);
@@ -36,12 +38,21 @@ public:
     bool isOffScreen() {
         return topPipe.getPosition().x + topPipe.getGlobalBounds().width < 0;
     }
+
+    bool hasScored(const sf::Sprite& bird) {
+        if (!scored && bird.getPosition().x > topPipe.getPosition().x + topPipe.getGlobalBounds().width) {
+            scored = true;
+            return true;
+        }
+        return false;
+    }
 };
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Flappy Girl");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Flappy Bird");
     window.setFramerateLimit(60);
 
+    
     sf::Texture birdTexture;
     birdTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");
     sf::Texture pipeTexture;
@@ -56,6 +67,9 @@ int main() {
     groundTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ground.png");  
     sf::Texture gameOverTexture;
     gameOverTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/gameover.png");  
+    sf::Texture smallImageTexture;
+    smallImageTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");  
+
     
     sf::Sprite background(backgroundTexture);
     sf::Sprite bird(birdTexture);
@@ -73,7 +87,25 @@ int main() {
     ground.setPosition(0, WINDOW_HEIGHT - ground.getGlobalBounds().height);
 
     sf::Sprite gameOver(gameOverTexture);
-    gameOver.setPosition(WINDOW_WIDTH / 2 - gameOver.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 - gameOver.getGlobalBounds().height / 2);
+    gameOver.setPosition(WINDOW_WIDTH / 2 - gameOver.getGlobalBounds().width / 2, 50);
+
+    sf::Sprite smallImage(smallImageTexture);
+    smallImage.setScale(0.3f, 0.3f);
+    smallImage.setPosition(WINDOW_WIDTH / 2 - smallImage.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 - smallImage.getGlobalBounds().height / 2 - 50);
+
+    sf::Font font;
+    font.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/font/04B_19__.ttf");
+
+    sf::Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(50);
+    scoreText.setFillColor(sf::Color::White);
+    scoreText.setPosition(WINDOW_WIDTH / 2, 50);
+
+    sf::Text congratulationsText;
+    congratulationsText.setFont(font);
+    congratulationsText.setCharacterSize(30);
+    congratulationsText.setFillColor(sf::Color::White);
 
     float birdVelocity = 0;
     bool isGameOver = false;
@@ -81,6 +113,7 @@ int main() {
 
     std::vector<Pipe> pipes;
     float timeSinceLastPipe = 0;
+    int score = 0;
 
     sf::Clock clock;
 
@@ -99,6 +132,7 @@ int main() {
                 birdVelocity = 0;
                 pipes.clear();
                 timeSinceLastPipe = 0;
+                score = 0;
             }
             if (gameState == GAME && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && !isGameOver) {
                 birdVelocity = JUMP_VELOCITY;
@@ -126,13 +160,16 @@ int main() {
 
             for (auto& pipe : pipes) {
                 pipe.move(deltaTime);
+                if (pipe.hasScored(bird)) {
+                    score++;
+                }
                 if (bird.getGlobalBounds().intersects(pipe.topPipe.getGlobalBounds()) || bird.getGlobalBounds().intersects(pipe.bottomPipe.getGlobalBounds())) {
                     isGameOver = true;
                     gameState = GAME_OVER;
                 }
             }
 
-            pipes.erase(std::remove_if(pipes.begin(), pipes.end(), [](Pipe& pipe) { return pipe.isOffScreen(); }), pipes.end());
+            pipes.erase(remove_if(pipes.begin(), pipes.end(), [](Pipe& pipe) { return pipe.isOffScreen(); }), pipes.end());
         }
 
         window.clear(sf::Color::Blue);
@@ -149,9 +186,19 @@ int main() {
                 window.draw(pipe.bottomPipe);
             }
             window.draw(ground);
+
+            scoreText.setString(to_string(score));
+            scoreText.setOrigin(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2);
+            window.draw(scoreText);
         }
         else if (gameState == GAME_OVER) {
             window.draw(gameOver);
+            window.draw(smallImage);
+
+            congratulationsText.setString("Congratulations, you've scored " + to_string(score));
+            congratulationsText.setOrigin(congratulationsText.getGlobalBounds().width / 2, congratulationsText.getGlobalBounds().height / 2);
+            congratulationsText.setPosition(WINDOW_WIDTH / 2, smallImage.getPosition().y + smallImage.getGlobalBounds().height + 20);  
+            window.draw(congratulationsText);
         }
 
         window.display();
