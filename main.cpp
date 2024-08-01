@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
@@ -13,7 +14,7 @@ const float JUMP_VELOCITY = -300.0f;
 const float PIPE_SPEED = -200.0f;
 const float PIPE_SPAWN_INTERVAL = 1.5f;
 
-enum GameState { MENU, GAME, GAME_OVER };
+enum GameState { MENU, GAME, GAME_OVER, PAUSE };
 
 class Pipe {
 public:
@@ -49,10 +50,9 @@ public:
 };
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Flappy Bird");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Flappy Girl");
     window.setFramerateLimit(60);
 
-    
     sf::Texture birdTexture;
     birdTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");
     sf::Texture pipeTexture;
@@ -62,18 +62,32 @@ int main() {
     sf::Texture startTexture;
     startTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/start.png");
     sf::Texture logoTexture;
-    logoTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/logo1.png");  
+    logoTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/logo1.png");
     sf::Texture groundTexture;
-    groundTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ground.png");  
+    groundTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ground.png");
     sf::Texture gameOverTexture;
-    gameOverTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/gameover.png");  
+    gameOverTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/gameover.png");
     sf::Texture smallImageTexture;
-    smallImageTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");  
+    smallImageTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");
+    sf::Texture pauseTexture;
+    pauseTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/pause.png");
+    sf::Texture replayTexture; 
+    replayTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/replay.png"); 
 
-    
+    sf::SoundBuffer flapBuffer;
+    flapBuffer.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/sound/flap.wav");
+    sf::SoundBuffer scoreBuffer;
+    scoreBuffer.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/sound/score.wav");
+    sf::SoundBuffer hitBuffer;
+    hitBuffer.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/sound/hit.wav");
+
+    sf::Sound flapSound(flapBuffer);
+    sf::Sound scoreSound(scoreBuffer);
+    sf::Sound hitSound(hitBuffer);
+
     sf::Sprite background(backgroundTexture);
     sf::Sprite bird(birdTexture);
-    bird.setScale(0.15f, 0.15f);  
+    bird.setScale(0.15f, 0.15f);
     bird.setPosition(200, WINDOW_HEIGHT / 2);
 
     sf::Sprite startButton(startTexture);
@@ -92,6 +106,14 @@ int main() {
     sf::Sprite smallImage(smallImageTexture);
     smallImage.setScale(0.3f, 0.3f);
     smallImage.setPosition(WINDOW_WIDTH / 2 - smallImage.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 - smallImage.getGlobalBounds().height / 2 - 50);
+
+    sf::Sprite pauseImage(pauseTexture);
+    pauseImage.setScale(4.0f, 4.0f);
+    pauseImage.setPosition(WINDOW_WIDTH / 2 - pauseImage.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 - pauseImage.getGlobalBounds().height / 2);
+
+    sf::Sprite replayButton(replayTexture); 
+    replayButton.setScale(1.0f, 1.0f); 
+    replayButton.setPosition(WINDOW_WIDTH / 2 - replayButton.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 + 200); 
 
     sf::Font font;
     font.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/font/04B_19__.ttf");
@@ -125,6 +147,14 @@ int main() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                if (gameState == GAME) {
+                    gameState = PAUSE;
+                }
+                else if (gameState == PAUSE) {
+                    gameState = GAME;
+                }
+            }
             if (gameState == MENU && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 gameState = GAME;
                 isGameOver = false;
@@ -134,11 +164,15 @@ int main() {
                 timeSinceLastPipe = 0;
                 score = 0;
             }
-            if (gameState == GAME && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space && !isGameOver) {
+            if (gameState == GAME && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && !isGameOver) {
                 birdVelocity = JUMP_VELOCITY;
+                flapSound.play();
             }
             if (gameState == GAME_OVER && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                gameState = MENU;
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                if (replayButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    gameState = MENU; 
+                }
             }
         }
 
@@ -149,6 +183,7 @@ int main() {
             if (bird.getPosition().y + bird.getGlobalBounds().height >= WINDOW_HEIGHT - ground.getGlobalBounds().height || bird.getPosition().y <= 0) {
                 isGameOver = true;
                 gameState = GAME_OVER;
+                hitSound.play();
             }
 
             timeSinceLastPipe += deltaTime;
@@ -162,10 +197,12 @@ int main() {
                 pipe.move(deltaTime);
                 if (pipe.hasScored(bird)) {
                     score++;
+                    scoreSound.play();
                 }
                 if (bird.getGlobalBounds().intersects(pipe.topPipe.getGlobalBounds()) || bird.getGlobalBounds().intersects(pipe.bottomPipe.getGlobalBounds())) {
                     isGameOver = true;
                     gameState = GAME_OVER;
+                    hitSound.play();
                 }
             }
 
@@ -197,8 +234,12 @@ int main() {
 
             congratulationsText.setString("Congratulations, you've scored " + to_string(score));
             congratulationsText.setOrigin(congratulationsText.getGlobalBounds().width / 2, congratulationsText.getGlobalBounds().height / 2);
-            congratulationsText.setPosition(WINDOW_WIDTH / 2, smallImage.getPosition().y + smallImage.getGlobalBounds().height + 20);  
+            congratulationsText.setPosition(WINDOW_WIDTH / 2, smallImage.getPosition().y + smallImage.getGlobalBounds().height + 70);
             window.draw(congratulationsText);
+            window.draw(replayButton); 
+        }
+        else if (gameState == PAUSE) {
+            window.draw(pauseImage);
         }
 
         window.display();
