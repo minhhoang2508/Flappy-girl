@@ -25,7 +25,7 @@ public:
     Pipe(float x, float gapY, sf::Texture& pipeTexture) {
         topPipe.setTexture(pipeTexture);
         bottomPipe.setTexture(pipeTexture);
-        topPipe.setScale(1, -1);  
+        topPipe.setScale(1, -1); 
 
         topPipe.setPosition(x, gapY - 100);
         bottomPipe.setPosition(x, gapY + 100);
@@ -36,7 +36,7 @@ public:
         bottomPipe.move(PIPE_SPEED * deltaTime, 0);
     }
 
-    bool isOffScreen() {
+    bool isOffScreen() const {
         return topPipe.getPosition().x + topPipe.getGlobalBounds().width < 0;
     }
 
@@ -87,7 +87,7 @@ int main() {
 
     sf::Sprite background(backgroundTexture);
     sf::Sprite bird(birdTexture);
-    bird.setScale(0.15f, 0.15f);
+    bird.setScale(0.14f, 0.14f);
     bird.setPosition(200, WINDOW_HEIGHT / 2);
 
     sf::Sprite startButton(startTexture);
@@ -139,6 +139,8 @@ int main() {
 
     sf::Clock clock;
 
+    sf::View view(sf::FloatRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT));
+
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
 
@@ -146,6 +148,21 @@ int main() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
+            }
+            if (event.type == sf::Event::Resized) {
+                float aspectRatio = float(WINDOW_WIDTH) / float(WINDOW_HEIGHT);
+                float newAspectRatio = float(event.size.width) / float(event.size.height);
+
+                if (newAspectRatio > aspectRatio) {
+                    float newWidth = aspectRatio * event.size.height;
+                    view.setViewport(sf::FloatRect((event.size.width - newWidth) / (2.0f * event.size.width), 0.0f, newWidth / event.size.width, 1.0f));
+                }
+                else {
+                    float newHeight = event.size.width / aspectRatio;
+                    view.setViewport(sf::FloatRect(0.0f, (event.size.height - newHeight) / (2.0f * event.size.height), 1.0f, newHeight / event.size.height));
+                }
+
+                window.setView(view);
             }
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                 if (gameState == GAME) {
@@ -170,13 +187,15 @@ int main() {
             }
             if (gameState == GAME_OVER && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                if (replayButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+
+                if (replayButton.getGlobalBounds().contains(worldPos)) {
                     gameState = MENU; 
                 }
             }
         }
 
-        if (gameState == GAME && !isGameOver) {
+        if (gameState == GAME) {
             birdVelocity += GRAVITY * deltaTime;
             bird.move(0, birdVelocity * deltaTime);
 
@@ -189,7 +208,7 @@ int main() {
             timeSinceLastPipe += deltaTime;
             if (timeSinceLastPipe >= PIPE_SPAWN_INTERVAL) {
                 float gapY = 150 + std::rand() % (WINDOW_HEIGHT - 300);
-                pipes.push_back(Pipe(WINDOW_WIDTH, gapY, pipeTexture));
+                pipes.emplace_back(WINDOW_WIDTH, gapY, pipeTexture); 
                 timeSinceLastPipe = 0;
             }
 
@@ -206,10 +225,11 @@ int main() {
                 }
             }
 
-            pipes.erase(remove_if(pipes.begin(), pipes.end(), [](Pipe& pipe) { return pipe.isOffScreen(); }), pipes.end());
+            pipes.erase(std::remove_if(pipes.begin(), pipes.end(), [](const Pipe& pipe) { return pipe.isOffScreen(); }), pipes.end());
         }
 
-        window.clear(sf::Color::Blue);
+        window.clear(sf::Color(150, 150, 150));
+
         window.draw(background);
 
         if (gameState == MENU) {
@@ -247,3 +267,4 @@ int main() {
 
     return 0;
 }
+
