@@ -56,9 +56,9 @@ int main() {
     sf::Texture birdTexture;
     birdTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");
     sf::Texture pipeTexture;
-    pipeTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/pipe.png");
+    pipeTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/treetrunk.png");
     sf::Texture backgroundTexture;
-    backgroundTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/background/day.png");
+    backgroundTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/background/night.png");
     sf::Texture startTexture;
     startTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/start.png");
     sf::Texture logoTexture;
@@ -87,7 +87,7 @@ int main() {
 
     sf::Sprite background(backgroundTexture);
     sf::Sprite bird(birdTexture);
-    bird.setScale(0.14f, 0.14f);
+    bird.setScale(0.12f, 0.12f);
     bird.setPosition(200, WINDOW_HEIGHT / 2);
 
     sf::Sprite startButton(startTexture);
