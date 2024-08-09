@@ -22,6 +22,10 @@ Bấm nút Start để bắt đầu màn chơi
 
 <img src="https://github.com/user-attachments/assets/a8435077-c9c0-436a-b7dd-11fcf91fb260" width="100" >
 
+- Đồng hồ: khi ăn vào tốc độ game sẽ chậm lại giúp con chim dễ dàng vượt qua các cây.
+
+<img src="https://github.com/user-attachments/assets/057422d1-649b-4a4e-aec5-62463a8c342d" width="100" >
+
 - Mặt đất: chim không được rơi xuống đất, nếu chạm đất màn chơi sẽ kết thúc.
 
 <img src="https://github.com/user-attachments/assets/02e81ce7-416f-455a-ae0a-5c768216a23b" width="400" height="20">
