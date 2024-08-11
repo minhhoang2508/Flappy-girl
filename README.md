@@ -46,6 +46,26 @@ Bấm nút Start để bắt đầu màn chơi
 
 ![image](https://github.com/user-attachments/assets/a88b5f46-f95f-4551-9409-3ead116e46e2)
 
+# 3. Cơ chế chơi
+- Nút điều khiển trong quá trình chơi
+  + Chuột trái: Ấn chuột trái để điều khiển con chim, giúp nó bay lên cao.
+  + ESC: Ấn ESC trong quá trình chơi để tạm dừng game, ấn thêm 1 lần nữa game sẽ tiếp tục.
+  + Màn hình khi tạm dừng game
+ 
+![image](https://github.com/user-attachments/assets/45992ee2-7d13-413a-ac0c-dea4089661cc)
+
+- Cách chơi:
+  + Mục tiêu của trò chơi là giúp cho con chim đạt được số điểm cao nhất có thể. Bằng việc click chuột trái để khiến con chim bay lên, người chơi sẽ như được hòa mình vào con chim để vượt qua các thân cây phía trước, những vật cản chính của game.
+  + Để giúp người chơi thuận tiện và dễ dàng hơn trong quá trình chơi, 2 vật phẩm sẽ xuất hiện ngẫu nhiên trong màn chơi bao gồm quả táo và đồng hồ, mỗi vật phẩm sẽ có chức năng riêng của nó.
+  + Về quả táo, khi con chim ăn phải thì kích thước sẽ thu nhỏ lại giúp dễ dàng vượt qua các thân cây hơn. Quá trình thu nhỏ sẽ kết thúc khi người chơi đạt thêm được 10 điểm kể từ lúc ăn quả táo.
+  + Về đồng hồ, nó sẽ khiến cho tốc độ game giảm đi và điều này sẽ giúp cho người chơi dễ xử lí các tình huống bất ngờ có thể xảy ra. Quá trình làm chậm tốc độ game sẽ kết thúc khi người chơi đạt thêm được 5 điểm kể từ lúc ăn đồng hồ.
+- Con chim khi thu nhỏ
+
+![image](https://github.com/user-attachments/assets/e046c77c-b3f0-4db1-99c9-866cc550a78e)
+
+- Đồng hồ trong game
+
+![image](https://github.com/user-attachments/assets/0dc7e3f3-162a-4de1-b875-6e0d040088d8)
 
 
 
