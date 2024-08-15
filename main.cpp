@@ -14,7 +14,8 @@ const float JUMP_VELOCITY = -300.0f;
 const float PIPE_SPEED = -200.0f;
 const float PIPE_SPAWN_INTERVAL = 1.6f;
 const float APPLE_SCALE_NORMAL = 0.15f;
-const float APPLE_SCALE_SMALL = 0.08f; 
+const float SLOW_MOTION_FACTOR = 0.5f;
+const float SLOW_MOTION_DURATION = 5.0f;
 
 enum GameState { MENU, GAME, GAME_OVER, PAUSE };
 
@@ -72,8 +73,27 @@ public:
     }
 
     void shrink() {
-        scale = APPLE_SCALE_SMALL;
-        sprite.setScale(scale, scale);
+        eaten = true;
+    }
+};
+
+class Clock {
+public:
+    sf::Sprite sprite;
+    bool collected = false;
+
+    Clock(float x, float y, sf::Texture& clockTexture) {
+        sprite.setTexture(clockTexture);
+        sprite.setScale(0.1f, 0.1f);
+        sprite.setPosition(x, y);
+    }
+
+    void move(float deltaTime) {
+        sprite.move(PIPE_SPEED * deltaTime, 0);
+    }
+
+    bool isOffScreen() const {
+        return sprite.getPosition().x + sprite.getGlobalBounds().width < 0;
     }
 };
 
@@ -103,6 +123,8 @@ int main() {
     replayTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/replay.png");
     sf::Texture appleTexture;
     appleTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/apple.png");
+    sf::Texture clockTexture;
+    clockTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/clock.png");
 
     sf::SoundBuffer flapBuffer;
     flapBuffer.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/sound/flap.wav");
@@ -165,10 +187,14 @@ int main() {
 
     std::vector<Pipe> pipes;
     std::vector<Apple> apples;
+    std::vector<Clock> clocks;
     float timeSinceLastPipe = 0;
     float timeSinceLastApple = 0;
+    float timeSinceLastClock = 0;
     int score = 0;
     int shrinkEndScore = -1;
+    bool isSlowMotion = false;
+    int slowMotionEndScore = -1;
 
     sf::Clock clock;
 
@@ -178,6 +204,9 @@ int main() {
 
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
+        if (isSlowMotion) {
+            deltaTime *= SLOW_MOTION_FACTOR;
+        }
 
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -219,10 +248,14 @@ int main() {
                     birdVelocity = 0;
                     pipes.clear();
                     apples.clear();
+                    clocks.clear();
                     timeSinceLastPipe = 0;
                     timeSinceLastApple = 0;
+                    timeSinceLastClock = 0;
                     score = 0;
                     shrinkEndScore = -1;
+                    isSlowMotion = false;
+                    slowMotionEndScore = -1;
                     isGameOver = false;
                 }
             }
@@ -256,10 +289,18 @@ int main() {
                 pipes.emplace_back(WINDOW_WIDTH, gapY, pipeTexture);
                 timeSinceLastPipe = 0;
 
-                if (shrinkEndScore == -1 && std::rand() % 5 == 0) {
+                bool spawnApple = (shrinkEndScore == -1 && std::rand() % 10 == 0);
+                bool spawnClock = (!spawnApple && std::rand() % 10 == 0);
+
+                if (spawnApple) {
                     float appleY = gapY;
                     float appleX = WINDOW_WIDTH + (pipes.back().bottomPipe.getGlobalBounds().width / 3.5f);
-                    apples.emplace_back(appleX, appleY, appleTexture); 
+                    apples.emplace_back(appleX, appleY, appleTexture);
+                }
+                else if (spawnClock) {
+                    float clockY = gapY;
+                    float clockX = WINDOW_WIDTH + (pipes.back().bottomPipe.getGlobalBounds().width / 3.5f);
+                    clocks.emplace_back(clockX, clockY, clockTexture);
                 }
             }
 
@@ -289,12 +330,28 @@ int main() {
 
             apples.erase(std::remove_if(apples.begin(), apples.end(), [](const Apple& apple) { return apple.eaten || apple.isOffScreen(); }), apples.end());
 
+            for (auto& clock : clocks) {
+                clock.move(deltaTime);
+                if (!clock.collected && bird.getGlobalBounds().intersects(clock.sprite.getGlobalBounds())) {
+                    clock.collected = true;
+                    isSlowMotion = true;
+                    slowMotionEndScore = score + 5;
+                }
+            }
+
+            clocks.erase(std::remove_if(clocks.begin(), clocks.end(), [](const Clock& clock) { return clock.collected || clock.isOffScreen(); }), clocks.end());
+
             if (shrinkEndScore != -1 && score >= shrinkEndScore) {
                 bird.setScale(0.12f, 0.12f);
                 shrinkEndScore = -1;
             }
             else if (shrinkEndScore != -1) {
                 bird.setScale(0.06f, 0.06f);
+            }
+
+            if (isSlowMotion && score >= slowMotionEndScore) {
+                isSlowMotion = false;
+                slowMotionEndScore = -1;
             }
         }
 
@@ -314,6 +371,9 @@ int main() {
             }
             for (auto& apple : apples) {
                 window.draw(apple.sprite);
+            }
+            for (auto& clock : clocks) {
+                window.draw(clock.sprite);
             }
             window.draw(ground);
 
