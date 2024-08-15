@@ -17,12 +17,12 @@ const float APPLE_SCALE_NORMAL = 0.15f;
 const float SLOW_MOTION_FACTOR = 0.5f;
 const float SLOW_MOTION_DURATION = 5.0f;
 
-enum GameState { MENU, GAME, GAME_OVER, PAUSE };
+enum GameState { MENU, GAME, GAME_OVER, PAUSE };  // Các trạng thái của game
 
 class Pipe {
 public:
-    sf::Sprite topPipe;
-    sf::Sprite bottomPipe;
+    sf::Sprite topPipe; // Đường ống trên
+    sf::Sprite bottomPipe; // Đường ống dưới
     bool scored = false;
 
     Pipe(float x, float gapY, sf::Texture& pipeTexture) {
@@ -40,7 +40,7 @@ public:
     }
 
     bool isOffScreen() const {
-        return topPipe.getPosition().x + topPipe.getGlobalBounds().width < 0;
+        return topPipe.getPosition().x + topPipe.getGlobalBounds().width < 0; // Kiểm tra đường ống đã ra khỏi màn hình chưa
     }
 
     bool hasScored(const sf::Sprite& bird) {
@@ -69,9 +69,10 @@ public:
     }
 
     bool isOffScreen() const {
-        return sprite.getPosition().x + sprite.getGlobalBounds().width < 0;
+        return sprite.getPosition().x + sprite.getGlobalBounds().width < 0; // Kiểm tra quả táo đã ra khỏi màn hình chưa
     }
 
+    // Đánh dấu quả táo đã bị ăn
     void shrink() {
         eaten = true;
     }
@@ -99,8 +100,9 @@ public:
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Flappy Girl");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(60); // Giới hạn số khung hình mỗi giây
 
+    // Tải các tài nguyên hình ảnh
     sf::Texture birdTexture;
     birdTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/ladybird.png");
     sf::Texture pipeTexture;
@@ -126,6 +128,7 @@ int main() {
     sf::Texture clockTexture;
     clockTexture.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/picture/clock.png");
 
+    // Tải các tài nguyên âm thanh
     sf::SoundBuffer flapBuffer;
     flapBuffer.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/sound/flap.wav");
     sf::SoundBuffer scoreBuffer;
@@ -139,8 +142,8 @@ int main() {
 
     sf::Sprite background(backgroundTexture);
     sf::Sprite bird(birdTexture);
-    bird.setScale(0.12f, 0.12f);
-    bird.setPosition(200, WINDOW_HEIGHT / 2);
+    bird.setScale(0.12f, 0.12f); // Đặt kích thước cho chim
+    bird.setPosition(200, WINDOW_HEIGHT / 2); // Đặt vị trí ban đầu cho chim
 
     sf::Sprite startButton(startTexture);
     startButton.setPosition(WINDOW_WIDTH / 2 - startButton.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 + 50);
@@ -167,6 +170,7 @@ int main() {
     replayButton.setScale(1.0f, 1.0f);
     replayButton.setPosition(WINDOW_WIDTH / 2 - replayButton.getGlobalBounds().width / 2, WINDOW_HEIGHT / 2 + 200);
 
+    // Tải tài nguyên font chữ
     sf::Font font;
     font.loadFromFile("C:/Users/PC/Desktop/New folder/Project1/font/04B_19__.ttf");
 
@@ -181,9 +185,9 @@ int main() {
     congratulationsText.setCharacterSize(30);
     congratulationsText.setFillColor(sf::Color::White);
 
-    float birdVelocity = 0;
+    float birdVelocity = 0; // Vận tốc ban đầu của chim
     bool isGameOver = false;
-    GameState gameState = MENU;
+    GameState gameState = MENU; // Trạng thái ban đầu của trò chơi
 
     std::vector<Pipe> pipes;
     std::vector<Apple> apples;
@@ -200,7 +204,7 @@ int main() {
 
     sf::View view(sf::FloatRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT));
 
-    std::srand(std::time(nullptr));
+    std::srand(std::time(nullptr)); // Khởi tạo seed cho hàm ngẫu nhiên
 
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
@@ -213,7 +217,8 @@ int main() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-            if (event.type == sf::Event::Resized) {
+            // Thay đổi kích thước cửa sổ vẫn giữ nguyên tỉ lệ
+            if (event.type == sf::Event::Resized) { 
                 float aspectRatio = float(WINDOW_WIDTH) / float(WINDOW_HEIGHT);
                 float newAspectRatio = float(event.size.width) / float(event.size.height);
 
@@ -228,7 +233,7 @@ int main() {
 
                 window.setView(view);
             }
-
+            // Kiểm tra phím ESC để chuyển đổi giữa trạng thái chơi và tạm dừng
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                 if (gameState == GAME) {
                     gameState = PAUSE;
@@ -237,6 +242,7 @@ int main() {
                     gameState = GAME;
                 }
             }
+            // Kiểm tra nhấp chuột trong menu để bắt đầu trò chơi
             if (gameState == MENU && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
@@ -259,10 +265,12 @@ int main() {
                     isGameOver = false;
                 }
             }
+            // Kiểm tra nhấp chuột khi đang chơi để nhảy
             if (gameState == GAME && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && !isGameOver) {
                 birdVelocity = JUMP_VELOCITY;
                 flapSound.play();
             }
+            // Kiểm tra nhấp chuột khi trò chơi kết thúc để trở về menu
             if (gameState == GAME_OVER && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
@@ -273,22 +281,25 @@ int main() {
             }
         }
 
+        // Cập nhật vận tốc và vị trí của con chim
         if (gameState == GAME) {
             birdVelocity += GRAVITY * deltaTime;
             bird.move(0, birdVelocity * deltaTime);
 
+            // Kiểm tra va chạm của chú chim với mặt đất hoặc trần
             if (bird.getPosition().y + bird.getGlobalBounds().height >= WINDOW_HEIGHT - ground.getGlobalBounds().height || bird.getPosition().y <= 0) {
                 isGameOver = true;
                 gameState = GAME_OVER;
                 hitSound.play();
             }
-
+            // Tạo ống mới sau mỗi khoảng thời gian
             timeSinceLastPipe += deltaTime;
             if (timeSinceLastPipe >= PIPE_SPAWN_INTERVAL) {
                 float gapY = 150 + std::rand() % (WINDOW_HEIGHT - 300);
                 pipes.emplace_back(WINDOW_WIDTH, gapY, pipeTexture);
                 timeSinceLastPipe = 0;
 
+                // Xác suất sinh ra quả táo hoặc đồng hồ
                 bool spawnApple = (shrinkEndScore == -1 && std::rand() % 10 == 0);
                 bool spawnClock = (!spawnApple && std::rand() % 10 == 0);
 
@@ -317,8 +328,9 @@ int main() {
                 }
             }
 
-            pipes.erase(std::remove_if(pipes.begin(), pipes.end(), [](const Pipe& pipe) { return pipe.isOffScreen(); }), pipes.end());
+            pipes.erase(std::remove_if(pipes.begin(), pipes.end(), [](const Pipe& pipe) { return pipe.isOffScreen(); }), pipes.end()); // Xóa các ống đã ra khỏi màn hình
 
+            // Cập nhật vị trí và kiểm tra va chạm của quả táo với con chim
             for (auto& apple : apples) {
                 apple.move(deltaTime);
                 if (!apple.eaten && bird.getGlobalBounds().intersects(apple.sprite.getGlobalBounds())) {
@@ -328,8 +340,9 @@ int main() {
                 }
             }
 
-            apples.erase(std::remove_if(apples.begin(), apples.end(), [](const Apple& apple) { return apple.eaten || apple.isOffScreen(); }), apples.end());
+            apples.erase(std::remove_if(apples.begin(), apples.end(), [](const Apple& apple) { return apple.eaten || apple.isOffScreen(); }), apples.end()); // Xóa các quả táo đã ra khỏi màn hình hoặc đã bị ăn
 
+            // Cập nhật vị trí và kiểm tra va chạm của đồng hồ với con chim
             for (auto& clock : clocks) {
                 clock.move(deltaTime);
                 if (!clock.collected && bird.getGlobalBounds().intersects(clock.sprite.getGlobalBounds())) {
@@ -339,8 +352,9 @@ int main() {
                 }
             }
 
-            clocks.erase(std::remove_if(clocks.begin(), clocks.end(), [](const Clock& clock) { return clock.collected || clock.isOffScreen(); }), clocks.end());
+            clocks.erase(std::remove_if(clocks.begin(), clocks.end(), [](const Clock& clock) { return clock.collected || clock.isOffScreen(); }), clocks.end()); // Xóa các đồng hồ đã ra khỏi màn hình hoặc đã bị ăn
 
+            // Điều chỉnh kích thước của chú chim
             if (shrinkEndScore != -1 && score >= shrinkEndScore) {
                 bird.setScale(0.12f, 0.12f);
                 shrinkEndScore = -1;
@@ -348,7 +362,7 @@ int main() {
             else if (shrinkEndScore != -1) {
                 bird.setScale(0.06f, 0.06f);
             }
-
+            // Kiểm tra hiệu ứng làm chậm
             if (isSlowMotion && score >= slowMotionEndScore) {
                 isSlowMotion = false;
                 slowMotionEndScore = -1;
