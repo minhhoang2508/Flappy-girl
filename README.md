@@ -67,6 +67,33 @@ Bấm nút Start để bắt đầu màn chơi
 
 ![image](https://github.com/user-attachments/assets/0dc7e3f3-162a-4de1-b875-6e0d040088d8)
 
+# 4. Các kỹ thuật sử dụng
+- Sử dụng thư viện SFML.
+- Sử dụng nhiều class và vector:
+  + Tạo các class cho các đối tượng trong game như Bird, Pipe, Apple, Clock, mỗi class chứa thuộc tính và phương thức riêng để quản lý hành vi của các đối tượng này.
+  + Sử dụng vector để lưu trữ các đối tượng động như pipes, apples, clocks giúp dễ dàng quản lý và cập nhật vị trí, trạng thái của chúng trong game.
+- Xử lý va chạm:
+  + Kiểm tra va chạm giữa con chim với các thân cây, quả táo, và đồng hồ.
+  + Kiểm tra va chạm giữa các đối tượng với biên giới của cửa sổ game.
+  + Xử lý va chạm để thay đổi kích thước của con chim hoặc kích hoạt hiệu ứng chậm thời gian khi ăn táo hoặc đồng hồ.
+- Xử lý trọng lực và chuyển động:
+  + Áp dụng trọng lực cho con chim, khiến nó rơi tự do khi không nhấn chuột trái.
+  + Tạo chuyển động cho các thân cây di chuyển từ phải sang trái.
+- Xử lý thời gian và trạng thái:
+  + Sử dụng các biến thời gian để kiểm soát việc sinh ra các đối tượng như Pipe, Apple, Clock.
+  + Chuyển đổi giữa các trạng thái khác nhau của game như MENU, GAME, PAUSE, GAME_OVER.
+- Tạo và sử dụng hiệu ứng âm thanh:
+  + Âm thanh xuất hiện khi con chim va chạm hoặc đạt điểm số.
+- Xử lý giao diện người dùng:
+  + Tạo các nút như startButton, replayButton để bắt đầu và chơi lại game.
+  + Hiển thị các văn bản như điểm số, thông điệp chúc mừng khi kết thúc game.
+- Sử dụng các kỹ thuật vẽ và hiển thị:
+  + Tạo background và các hình ảnh khác như ground, logo, pauseImage.
+  + Hiển thị hình ảnh chim, thân cây, quả táo và đồng hồ trong quá trình chơi game.
+- Tạo hiệu ứng đặc biệt:
+  + Thay đổi kích thước con chim khi ăn quả táo.
+  + Kích hoạt chế độ chậm thời gian khi ăn đồng hồ, và kết thúc khi đạt được một số điểm nhất định.
+- Sử dụng kỹ thuật edit và cắt ghép để lấy hình ảnh từ các nguồn trên mạng.
 
 
 
