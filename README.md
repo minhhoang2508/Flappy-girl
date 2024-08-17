@@ -101,6 +101,15 @@ Bấm nút Start để bắt đầu màn chơi
 - Logo "Flappy Girl" và hình ảnh con chim trong game được tạo ra nhờ sử dụng AI Chatgpt.
 - Kỹ thuật xóa background ảnh nhờ sử dụng web RemoveBG https://remove-bg.ai/vi
 
+# 6. Hướng phát triển game
+- Cập nhật chế độ chơi dễ, trung bình và khó.
+- Tạo ra nhiều vật phẩm trong game hơn. VD:
+  + Ăn quả cam con chim sẽ bị đảo lộn ngược lại khiến trò chơi thêm thử thách.
+  + Ăn khiên bảo vệ giúp con chim đâm vào thân cây mà không chết.
+  + Ăn trái tim giúp con chim có thể hồi sinh 1 lần.
+- Thêm các hình ảnh mới vào game. VD:
+  + Với mỗi chế độ thì background sẽ khác nhau.
+  + Thay vì là thân cây có thể con chim phải vượt qua cột điện hay tảng đá,...
 
 
 
