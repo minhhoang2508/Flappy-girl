@@ -95,7 +95,11 @@ Bấm nút Start để bắt đầu màn chơi
   + Kích hoạt chế độ chậm thời gian khi ăn đồng hồ, và kết thúc khi đạt được một số điểm nhất định.
 - Sử dụng kỹ thuật edit và cắt ghép để lấy hình ảnh từ các nguồn trên mạng.
 
-
+# 5. Nguồn tham khảo
+- Tham khảo cách cài đặt thư viện SFML vào Visual Studio 2022 https://www.youtube.com/watch?v=4fcTqmT0Hhg&t=0s
+- Âm thanh, hình ảnh và phông chữ được mượn từ các file fonts, textures và sounds của tài khoản Github AlexZihaoXu https://github.com/AlexZihaoXu/CppFlappyBird
+- Logo "Flappy Girl" và hình ảnh con chim trong game được tạo ra nhờ sử dụng AI Chatgpt.
+- Kỹ thuật xóa background ảnh nhờ sử dụng web RemoveBG https://remove-bg.ai/vi
 
 
 
