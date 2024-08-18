@@ -5,6 +5,16 @@ Demo game và cấu trúc của code: https://youtu.be/MSp90oDuIRY
 Flappy Girl là tựa game được lấy cảm hứng từ trò chơi nổi tiếng Flappy Bird được phát triển bởi Nguyễn Hà Đông. Thoạt nhìn thì cơ chế của trò chơi khá là đơn giản và dễ hiểu. Người chơi chỉ có mục tiêu duy nhất là điều khiển con chim bay qua các thân cây, tránh để chim đâm vào cây hoặc rơi xuống đất. Tuy nhiên chính lối chơi không phức tạp đó lại vô cùng cuốn hút người chơi, giúp người chơi có thể giải trí trong khoảng thời gian ngắn ngủi mà không tốn quá nhiều thời gian với thao tác game.
 
 Phiên bản Flappy Bird của Nguyễn Hà Đông là nguồn cảm hứng vô cùng to lớn đối với sự ra đời của Flappy Girl. Flappy Girl vẫn giữ nguyên tiêu chí cốt lõi của phiên bản gốc là tinh gọn, đơn giản, dễ hiểu và giết thời gian nhưng ngoài ra Flappy Girl đã phát triển thêm tính năng mới giúp con chim có thể ăn vật phẩm trong game để dễ dàng vượt qua chướng ngại vật hơn.
+
+# 0. Cách tải game
+- Bước 1: Ấn vào Code rồi chọn Download ZIP.
+
+![image](https://github.com/user-attachments/assets/58722c1b-69b2-4afb-a89b-2d8169e3c9a3)
+
+- Bước 2: Cài đặt môi trường phát triển và thư viện đồ họa SFML.
+- Bước 3: Mở file có đuôi .sln bằng Visual Studio.
+- Bước 4: Ấn vào Local Windows Debugger để khởi động game.
+
 # 1. Menu game
 Bấm nút Start để bắt đầu màn chơi
 
