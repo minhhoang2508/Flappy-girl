@@ -1,6 +1,15 @@
 # Flappy Girl
 Tựa game là sản phẩm của bài tập lớn môn Lập trình nâng cao (INT2215 70) dưới sự giảng dạy của giảng viên Lê Đức Trọng và giảng viên Hoàng Thị Ngọc Trang. 
 Demo game và cấu trúc của code: https://youtu.be/MSp90oDuIRY
+- [Giới thiệu game](#giới-thiệu-game)
+- [0. Cách tải game](#0-cách-tải-game)
+- [1. Menu game](#1-menu-game)
+- [2. Các thành phần trong game](#2-các-thành-phần-trong-game)
+- [3. Cơ chế chơi](#3-cơ-chế-chơi)
+- [4. Các kỹ thuật sử dụng](#4-các-kỹ-thuật-sử-dụng)
+- [5. Nguồn tham khảo](#5-nguồn-tham-khảo)
+- [6. Hướng phát triển game](#6-hướng-phát-triển-game)
+
 # Giới thiệu game
 Flappy Girl là tựa game được lấy cảm hứng từ trò chơi nổi tiếng Flappy Bird được phát triển bởi Nguyễn Hà Đông. Thoạt nhìn thì cơ chế của trò chơi khá là đơn giản và dễ hiểu. Người chơi chỉ có mục tiêu duy nhất là điều khiển con chim bay qua các thân cây, tránh để chim đâm vào cây hoặc rơi xuống đất. Tuy nhiên chính lối chơi không phức tạp đó lại vô cùng cuốn hút người chơi, giúp người chơi có thể giải trí trong khoảng thời gian ngắn ngủi mà không tốn quá nhiều thời gian với thao tác game.
 
